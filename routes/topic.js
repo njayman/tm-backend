@@ -46,13 +46,18 @@ router.post('/updateTopic/:topicid', async (req, res) => {
 });
 
 //update status of step
-router.post("/updatestatus/:topicid/:stepid", async (req,res) => {
-    const step = await Topic.updateOne({ _id: req.params.topicid, "steps._id": req.params.stepid }, {
-        "$set": {
-            "steps.$.status": req.body.status,
-        }
-    })
-    res.send("success!!")
+router.post("/updatestatus/:topicid/:stepid", async (req, res) => {
+    try {
+        const step = await Topic.updateOne({ _id: req.params.topicid, "steps._id": req.params.stepid }, {
+            "$set": {
+                "steps.$.status": req.body.status,
+            }
+        })
+        res.send("success!!")
+    } catch (err) {
+        console.log(err)
+    }
+
 })
 
 //add a step to a topic
