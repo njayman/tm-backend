@@ -7,7 +7,7 @@ const app = express();
 const serveIndex = require('serve-index');
 app.use(express.static('uploads'));
 
-const whitelist = ['https://training-management.now.sh/']
+const whitelist = ['http://training-management.now.sh/']
 const corsOptions = {
   origin: function (origin, callback) {
     if (whitelist.indexOf(origin) !== -1) {
