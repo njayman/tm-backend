@@ -6,7 +6,18 @@ const cors = require('cors');
 const app = express();
 const serveIndex = require('serve-index');
 app.use(express.static('uploads'));
-app.use(cors());
+
+const whitelist = ['https://training-management.now.sh/']
+const corsOptions = {
+  origin: function (origin, callback) {
+    if (whitelist.indexOf(origin) !== -1) {
+      callback(null, true)
+    } else {
+      callback(new Error('Not allowed by CORS'))
+    }
+  }
+}
+app.use(cors(corsOptions));
 app.use(bodyParser.json());
 //routes
 const topicRoute = require('./routes/topic');
