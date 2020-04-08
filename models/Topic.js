@@ -4,7 +4,6 @@ const StepSchema = mongoose.Schema({
     title: { type: String, default: "untitled" },
     status: { type: String, default: "notdone" },
     url: { type: String, default: "" },
-    type: { type: String, default: "" },
     date: {
         type: Date,
         default: Date.now
@@ -12,8 +11,8 @@ const StepSchema = mongoose.Schema({
 });
 
 const TopicSchema = mongoose.Schema({
-    name: String,
-    description: String,
+    name: { type: String, default: "untitled" },
+    description: { type: String, default: "untitled" },
     steps: [StepSchema],
     date: {
         type: Date,

@@ -98,18 +98,13 @@ router.post('/addTopic', (req, res) => {
     })
 });
 
-/*router.post('/', async (req, res) => {
-    const topic = new Topic({
-        name: req.body.name,
-        description: req.body.description
-    });
-    try {
-        const saveTopic = await topic.save();
-        res.json(saveTopic);
-    } catch (err) {
-        res.json({ message: err });
-    }
-});*/
+router.post("/file/:topicid/:stepid/", async (req, res) => {
+    const step = await Topic.updateOne({ _id: req.params.topicid, "steps._id": req.params.stepid }, {
+        "$set": {
+            "steps.$.url": req.body.fileUrl,
+        }
+    })
+});
 
 router.delete('/deleteStep/:topicid/:stepid', (req, res) => {
 
