@@ -1,8 +1,6 @@
 const express = require('express');
 const router = express.Router();
 const Topic = require('../models/Topic');
-const fs = require('fs');
-const fse = require('fs-extra');
 //get a list of topics
 router.get('/topic', async (req, res) => {
     try {
@@ -27,7 +25,6 @@ router.get('/topic/:topicid', async (req, res) => {
 router.delete('/deleteTopic/:topicid', async (req, res) => {
     try {
         const topic = await Topic.findByIdAndRemove(req.params.topicid);
-        fse.remove(`./uploads/${topic.name}`)
         res.json(topic);
     } catch (err) {
         res.json({ message: err });
@@ -65,9 +62,6 @@ router.post('/addStep/:topicid', async (req, res) => {
     const topic = await Topic.findById(req.params.topicid);
     let tname = topic.name;
     let sname = req.body.title;
-    fs.mkdir(`./uploads/${tname}/${sname}`, { recursive: true }, (err) => {
-        if (err) throw err;
-    });
     topic.steps.push({
         title: req.body.title,
     })
@@ -87,9 +81,6 @@ router.post('/addTopic', (req, res) => {
     }
     const newTopic = new Topic(topicObj);
     let tname = req.body.name;
-    fs.mkdir(`./uploads/${tname}`, { recursive: true }, (err) => {
-        if (err) throw err;
-    });
     newTopic.save((err, topic) => {
         if (err)
             res.status(400).send("Error while adding user");
@@ -106,23 +97,14 @@ router.post("/file/:topicid/:stepid/", async (req, res) => {
     })
 });
 
-router.delete('/deleteStep/:topicid/:stepid', (req, res) => {
-
+//delete a step
+router.delete('/deleteStep/:stepid', async (req, res) => {
+    id= req.params.stepid
+    await Topic.findOne({'steps._id': id}, async (err,result) => {
+        await result.steps.id(id).remove();
+        await result.save()
+        res.send('deleted')
+    })
 })
-
-/*router.post('/:topicid/:stepid', async (req, res) => {
-    const tot = "hello"
-    try {
-        const step = await Topic.updateOne({ _id: req.params.topicid, "steps._id": req.params.stepid }, {
-            "$set": {
-                "steps.$.url": tot
-            }
-        })
-        res.send(step);
-    } catch (err) {
-        res.json({ message: err });
-    }
-
-})*/
 
 module.exports = router;
